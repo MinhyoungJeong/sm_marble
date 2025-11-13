@@ -1,35 +1,9 @@
-//
-//  main.c
-//  SMMarble
-//
-//  Created by Juyeop Kim on 2023/11/05.
-//
 
 #include <time.h>
 #include <string.h>
 #include "smm_object.h"
 #include "smm_database.h"
 #include "smm_common.h"
-
-#define MAX_NODENR     100   // 보드 노드 최대 개수
-#define MAX_NODETYPE   7     // 노드 타입 종류 수
-#define MAX_GRADE      9     // 학점 종류 수
-
-// 보드 칸의 종류를 구분하는 상수
-#define SMMNODE_TYPE_LECTURE    0
-#define SMMNODE_TYPE_FOOD       1
-#define SMMNODE_TYPE_FESTIVAL   2
-#define SMMNODE_TYPE_START      3
-#define SMMNODE_TYPE_GRADUATE   4
-#define SMMNODE_TYPE_HOSPITAL   5
-#define SMMNODE_TYPE_CLUB       6
-
-
-extern char smm_name[MAX_NODENR][MAX_CHARNAME];
-extern int  smm_type[MAX_NODENR];
-extern int  smm_credit[MAX_NODENR];
-extern int  smm_energy[MAX_NODENR];
-extern int  board_nr;
 
 #define BOARDFILEPATH "marbleBoardConfig.txt"
 #define FOODFILEPATH "marbleFoodConfig.txt"
@@ -40,7 +14,12 @@ extern int  board_nr;
 static int board_nr;
 static int food_nr;
 static int festival_nr;
+static int player_nr;
 
+static int player_pos[MAX_PLAYER];
+static int player_credit[MAX_PLAYER];
+static int player_name[MAX_PLAYER][MAX_CHARNAME]
+static int player_energy[MAX_PLAYER];
 
 
 //function prototypes
@@ -57,6 +36,36 @@ void printGrades(int player); //print all the grade history of the player
 #endif
 
 
+void printPlayerStatus(void)
+{
+    int i;
+    for (i=0; i< player_nr; i++)
+    {
+        printf("%s - position : %i (%s), credit: %i, energy: %i \n",
+               player_name[i], player_pos[i]);
+    }
+    
+}
+
+
+
+
+
+void generatePlayers(int n, int initEnergy)
+{
+    int i;
+    for (i=0; i<n; i++)
+    {
+        player_pos[i] =0;
+        player_credit[i] = 0;
+        player_energy[i] = initEnergy;
+        
+        printf("Input %i -th player name: ", i);
+        scanf("%s",player name[i][0];
+        
+    }
+    
+}
 
 
 int rolldie(int player)
@@ -74,7 +83,7 @@ int rolldie(int player)
     return (rand()%MAX_DIE + 1);
 }
 
-
+#if 0
 //action code when a player stays at a node
 void actionNode(int player)
 {
@@ -85,7 +94,7 @@ void actionNode(int player)
             break;
     }
 }
-
+#endif
 
 
 int main(int argc, const char * argv[]) {
@@ -95,6 +104,8 @@ int main(int argc, const char * argv[]) {
     int type;
     int credit;
     int energy;
+    int cnt;
+    int pos;
     
     board_nr = 0;
     food_nr = 0;
@@ -104,7 +115,7 @@ int main(int argc, const char * argv[]) {
     
     
     //1. import parameters ---------------------------------------------------------------------------------
-    //1-1. boardConfig 
+    //1-1. boardConfig
     if ((fp = fopen(BOARDFILEPATH,"r")) == NULL)
     {
         printf("[ERROR] failed to open %s. This file should be in the same directory of SMMarble.exe.\n", BOARDFILEPATH);
@@ -113,17 +124,18 @@ int main(int argc, const char * argv[]) {
     }
     
     printf("Reading board component......\n");
-    while (fscanf(fp, "%s %i %i %i", name, &type, &credit, &energy) == 4)
-           {
-               // store the parameter set
-               printf("%s %i %i %i\n", name, type, credit, energy);
-           }
+    while ( fscanf(fp, "%s %i %i %i", name, &type, &credit, &energy) == 4 ) //read a node parameter set
+    {
+        //store the parameter set
+        printf("%s %i %i %i\n", name, type, credit, energy);
+        board_nr = smmObj_genNode(name, type, credit, energy);
+    }
     fclose(fp);
     printf("Total number of board nodes : %i\n", board_nr);
     
     
-    
-    //2. food card config 
+#if 0
+    //2. food card config
     if ((fp = fopen(FOODFILEPATH,"r")) == NULL)
     {
         printf("[ERROR] failed to open %s. This file should be in the same directory of SMMarble.exe.\n", FOODFILEPATH);
@@ -137,10 +149,10 @@ int main(int argc, const char * argv[]) {
     }
     fclose(fp);
     printf("Total number of food cards : %i\n", food_nr);
+
     
     
-    
-    //3. festival card config 
+    //3. festival card config
     if ((fp = fopen(FESTFILEPATH,"r")) == NULL)
     {
         printf("[ERROR] failed to open %s. This file should be in the same directory of SMMarble.exe.\n", FESTFILEPATH);
@@ -158,17 +170,27 @@ int main(int argc, const char * argv[]) {
     
     
     //2. Player configuration ---------------------------------------------------------------------------------
-    /*
+    
     do
     {
         //input player number to player_nr
+        printf("Input player number: ");
+        scanf("%i", &player_nr);
+        fflush(stdin); //버퍼를 비움
+        
+        if (player <= 0 || player_nr > MAX_PLAYER)
+            printf("Invalid player number.\n");
     }
-    while ();
+    
+    while (player <= 0 || player_nr > MAX_PLAYER);
     generatePlayers();
     */
-    
+#endif
+
+    cnt = 0;
+    pos = 0;
     //3. SM Marble game starts ---------------------------------------------------------------------------------
-    while () //is anybody graduated?
+    while (cnt < 5) //is anybody graduated?
     {
         int die_result;
         
@@ -180,13 +202,17 @@ int main(int argc, const char * argv[]) {
         
         //4-3. go forward
         //goForward();
-
-		//4-4. take action at the destination node of the board
+        //pos = pos + 2;
+        pos = (pos + rand()%6+1)%board_nr;
+        printf("move to pos : %i (node : %s, type : %i (%s))\n", pos, smmObj_getName(pos), smmObj_getType(pos), smmObj_getTypeName(pos));
+        
+        //4-4. take action at the destination node of the board
         //actionNode();
         
         //4-5. next turn
-        
+        cnt++;
     }
-    
+
+    system("PAUSE");
     return 0;
 }

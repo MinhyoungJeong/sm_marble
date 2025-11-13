@@ -11,25 +11,6 @@
 #define LIST_END            -1
 #define MAX_LIST            LISTNO_OFFSET_GRADE+MAX_PLAYER
 
-
-static int  smm_nodeNr = 0;
-static char smm_name[MAX_NODENR][MAX_CHARNAME];
-static int  smm_type[MAX_NODENR];
-static int  smm_credit[MAX_NODENR];
-static int  smm_energy[MAX_NODENR];
-
-int smmObj_genNode(char* name, int type, int credit, int energy)
-{
-    strcpy(smm_name[smm_nodeNr], name);
-    smm_type[smm_nodeNr]   = type;
-    smm_credit[smm_nodeNr] = credit;
-    smm_energy[smm_nodeNr] = energy;
-
-    smm_nodeNr++;
-
-    return smm_nodeNr;
-}
-
 //node definition for linked list
 typedef struct node{
     int index;      //index of the node
