@@ -11,7 +11,26 @@
 
 #define MAX_NODENR        100
 #define MAX_NODETYPE      7
-#define MAX_GRADE         9
+#define MAX_GRADE         13
+
+#define OBJTYPE_BOARD 0
+#define OBJTYPE_GRADE 1
+#define OBJTYPE_FOOD 2
+#define OBJTYPE_FEST 3
+
+
+#define GRADE_A+ 0
+#define GRADE_A0 1
+#define GRADE_A- 2
+#define GRADE_B+ 3
+#define GRADE_B- 4
+#define GRADE_C+ 5
+#define GRADE_C0 6
+#define GRADE_C- 7
+#define GRADE_D+ 8
+#define GRADE_D0 9
+#define GRADE_D- 10
+#define GRADE_F 11
 
 #define SMMNODE_TYPE_LECTURE                0
 #define SMMNODE_TYPE_RESTAURANT             1
@@ -32,27 +51,46 @@ static char smmNodeName[MAX_NODETYPE][MAX_CHARNAME] = {
        "festival"
 };
 
+static char smmObj_gradeName[MAX_GRADE][MAX_CHARNAME] = {
+       "A+",
+       "A0",
+       "A-",
+       "B+",
+       "B0",
+       "B-",
+       "C+",
+       "C-",
+       "D+",
+       "D-",
+       "F",
+};
+
 static int smm_nodeNr=0;
 
 typedef struct {
     char name[MAX_CHARNAME];
+    int objType;
     int type;
     int credit;
     int energy;
-} smmObj_board_t;
-
-
-static smmObj_board_t smmObj_board[MAX_NODENR];
-
+    int grade;
+} smmObj_object_t;
+//배열 형태가 아니라 linkedlist - database에 넣기
 //object generation
-int smmObj_genNode(char* name, int type, int credit, int energy)
+//node->확장시킬예정, 동적메모리형태로 할당하기
+void* smmObj_genObject(char* name, int objType int type, int credit, int energy, int grade)
 {
-    strcpy(smmObj_board[smm_nodeNr].name, name);
-    smmObj_board[smm_nodeNr].type   = type;
-    smmObj_board[smm_nodeNr].credit = credit;
-    smmObj_board[smm_nodeNr].energy = energy;
-    smm_nodeNr++;
-    return smm_nodeNr;
+    smmObj_object_t* ptr;
+    ptr = (smmObj_object_t*)malloc(sizeof(smmObj_object_t));
+    
+    strcpy(ptr->name, name);
+    ptr->type = type;
+    ptr->objType = objType;
+    ptr->credit = credit;
+    ptr->energy = energy;
+    ptr->grade = grade;
+
+    return ((void*)ptr);
 }
 
 //member retrieving

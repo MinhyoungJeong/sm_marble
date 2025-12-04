@@ -27,6 +27,7 @@ static int player_credit[MAX_PLAYER];
 static char player_name[MAX_PLAYER][MAX_CHARNAME];
 static int player_energy[MAX_PLAYER];
 
+
 void generatePlayers(int n, int initEnergy); //generate a new player
 void printPlayerStatus(void); //print all player status at the beginning of each turn
 
@@ -68,9 +69,13 @@ void printPlayerStatus(void)
 void generatePlayers(int n, int initEnergy) //generate a new player
 {
      int i;
+    
+     smm_players = (smm_player_t*)malloc(n*sizeof(smm_player_t));
+    
+    
      for (i=0;i<n;i++)
      {
-         player_pos[i] = 0;
+         player_pos[i].pos = 0; //나머지도 12/4일 코드 참조해서 바꾸기
          player_credit[i] = 0;
          player_energy[i] = initEnergy;
 
@@ -95,10 +100,11 @@ int rolldie(int player)
     return (rand()%MAX_DIE + 1);
 }
 
-#if 0
+
 //action code when a player stays at a node
 void actionNode(int player)
 {
+    
     switch(type)
     {
         //case lecture:
@@ -106,7 +112,7 @@ void actionNode(int player)
             break;
     }
 }
-#endif
+
 
 
 int main(int argc, const char * argv[]) {
@@ -140,8 +146,10 @@ int main(int argc, const char * argv[]) {
     {
         //store the parameter set
         printf("%s %i %i %i\n", name, type, credit, energy);
-        board_nr = smmObj_genNode(name, type, credit, energy);
+        board_nr = smmObj_genObject(name, type, credit, energy);
     }
+  
+    
     fclose(fp);
     printf("Total number of board nodes : %i\n", board_nr);
     
@@ -226,7 +234,7 @@ int main(int argc, const char * argv[]) {
         cnt++;
         turn = (turn + 1)%player_nr;
     }
-
+    free(smm_players);
     system("PAUSE");
     return 0;
 }
