@@ -41,6 +41,20 @@ void* findGrade(int player, char *lectureName); //find the grade from the player
 void printGrades(int player); //print all the grade history of the player
 #endif
 
+void* findGrade(int player, char *lectureName)
+{
+    int size = smmdb_len(LISTNO_OFFSET_GRADE+player);
+    int i;
+    for (i=0; i<size; i++) {
+        void *ptr = smmdb_getData(LISTNO_OFFSET_GRADE+player, i);
+        if (strcpy(smmObj_getObjectName(ptr), lectureName) == 0) {
+            return ptr;
+        }
+    }
+}
+
+
+
 
 void goForward(int player, int step)
 { //make player go "step" steps on the board (check if player is graduated)
@@ -104,11 +118,24 @@ int rolldie(int player)
 //action code when a player stays at a node
 void actionNode(int player)
 {
+    void *ptr = smmdb_getData(LISTNO_NODE,sm_players[player].pos);
+    int type = smmObj_getNodeType(sm_player)
+    int credit = smmObj_getNodeCredit
+    int energy = smmObj_getNodeEnergy
+    
+    printf();
     
     switch(type)
     {
-        //case lecture:
-        default:
+            //case lecture:
+        case SMMNODE_TYPE_LECTURE;
+            if(findGrade(,)!=NULL)
+                smm_players[player].credit += credit;
+            smm_players[player].energy -= energy;
+            
+            grade = rand()%SMMNODE_MAX_GRADE;
+            gradePtr = smmObj_genObject(smmObj_getObjectName(ptr),SMNODE_OBJTYPE_GRADE, type, credit, energy,grade)
+            smmdb_addTail(LISTNO_OFFSET)GRADE+player,gradePtr);
             break;
     }
 }
@@ -161,11 +188,13 @@ int main(int argc, const char * argv[]) {
         printf("[ERROR] failed to open %s. This file should be in the same directory of SMMarble.exe.\n", FOODFILEPATH);
         return -1;
     }
-    
+    //여기 업데이트 안된부분 업데이트 해놓기.
     printf("\n\nReading food card component......\n");
     while () //read a food parameter set
     {
         //store the parameter set
+        ptr = smmObj_ //여기는 11월 마지막주 수업 내용 참고
+        smm_board_nr = smmdb_addTail(LISTNO_NODE, ptr); //linkedlist에 데이터를 넣는 코드
     }
     fclose(fp);
     printf("Total number of food cards : %i\n", food_nr);
@@ -204,10 +233,8 @@ int main(int argc, const char * argv[]) {
     while (player_nr <= 0 || player_nr > MAX_PLAYER);
     
     
-    
-    
-    generatePlayers(player_nr, smmObj_getEnergy(0));
-    
+    generatePlayers(sum_player_nr, smmObj_getNodeEnergy(0));
+    smmdb_getData(SMMNODE_OBJTYPE,0)
 
 
     cnt = 0;

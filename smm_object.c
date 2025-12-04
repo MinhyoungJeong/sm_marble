@@ -118,10 +118,10 @@ int smmObj_getEnergy(int node_nr)
 }
 
 // i번째 칸의 "유형 이름(lecture, restaurant…)" 반환
-char* smmObj_getNodeName(int node_nr)
+char* smmObj_getNodeName(void *ptr)
 {
-    int type = smmObj_board[node_nr].type;   // 해당 칸의 type 번호
-    return smmNodeName[type];               // 그 type에 대한 문자열
+    smmObj_genObject_t* objPtr = (smmObj_object_t*)ptr;
+    return (objPtr->name);            // 그 type에 대한 문자열
 }
 
 
